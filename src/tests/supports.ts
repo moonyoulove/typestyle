@@ -1,4 +1,4 @@
-import { style, getStyles, reinit } from '../index';
+import { style, getStyles, reinit, hid } from '../index';
 import * as assert from 'assert';
 
 describe('@supports', () => {
@@ -12,6 +12,6 @@ describe('@supports', () => {
         }
       }
     });
-    assert.equal(getStyles(), '.f5f13tn{color:red}@supports (display: flex){.f5f13tn{color:white}}');
+    assert.match(getStyles(), new RegExp(`.${hid}\\{color:red\\}@supports \\(display: flex\\)\\{\\.${hid}\\{color:white\\}\\}`));
   });
 });

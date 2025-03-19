@@ -1,4 +1,4 @@
-import { style, stylesheet, getStyles, reinit, classes, cssRule, createTypeStyle } from '../index';
+import { style, stylesheet, getStyles, reinit, classes, cssRule, createTypeStyle, hid} from '../index';
 import * as assert from 'assert';
 
 describe("initial test", () => {
@@ -7,7 +7,7 @@ describe("initial test", () => {
     assert(getStyles() === '');
 
     style({ color: 'red' });
-    assert.equal(getStyles(), '.f1jvcvsh{color:red}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:red\\}$`));
   });
 
   it("reinit should clear", () => {
@@ -15,25 +15,25 @@ describe("initial test", () => {
     assert(getStyles() === '');
 
     style({ color: 'red' });
-    assert.equal(getStyles(), '.f1jvcvsh{color:red}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:red\\}$`));
   });
 
   it("child same", () => {
     reinit();
     style({ color: 'red', $nest: { '&>*': { color: 'red' } } });
-    assert.equal(getStyles(), '.f1nv0def,.f1nv0def>*{color:red}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid},\\.${hid}>\\*\\{color:red\\}$`));
   });
 
   it("child same unique", () => {
     reinit();
     style({ color: 'red', $nest: { '&>*': { color: 'red', $unique: true } } });
-    assert.equal(getStyles(), '.f1nv0def{color:red}.f1nv0def>*{color:red}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:red\\}\\.${hid}>\\*\\{color:red\\}$`));
   });
 
   it("child different", () => {
     reinit();
     style({ color: 'red', $nest: { '&>*': { color: 'blue' } } });
-    assert.equal(getStyles(), '.fv84gyi{color:red}.fv84gyi>*{color:blue}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:red\\}\\.${hid}>\\*\\{color:blue\\}$`));
   });
 
   it("media same", () => {
@@ -44,13 +44,13 @@ describe("initial test", () => {
         '@media (min-width: 400px)': { color: 'red' }
       }
     });
-    assert.equal(getStyles(), '.f12z113b{color:red}@media (min-width: 400px){.f12z113b{color:red}}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:red\\}@media \\(min-width: 400px\\)\\{\\.${hid}\\{color:red\\}\\}$`));
   });
 
   it("media different", () => {
     reinit();
     style({ color: 'red', $nest: { '@media (min-width: 400px)': { color: 'blue' } } });
-    assert.equal(getStyles(), '.fxfrsga{color:red}@media (min-width: 400px){.fxfrsga{color:blue}}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:red\\}@media \\(min-width: 400px\\)\\{\\.${hid}\\{color:blue\\}\\}$`));
   });
 
   it("classes should compose", () => {
@@ -64,7 +64,7 @@ describe("initial test", () => {
     reinit();
     cssRule('.transparent', { color: 'transparent' });
     style({ color: 'transparent' });
-    assert.equal(getStyles(), '.transparent,.fwarpl0{color:transparent}');
+    assert.match(getStyles(), new RegExp(`^\\.transparent,\\.${hid}\\{color:transparent\\}$`));
   });
 
   it("should support dedupe by default", () => {
@@ -83,7 +83,7 @@ describe("initial test", () => {
         }
       }
     });
-    assert.equal(getStyles(), '.f13byakl{color:blue}.f13byakl::-webkit-input-placeholder,.f13byakl::-moz-placeholder,.f13byakl::-ms-input-placeholder{color:rgba(0, 0, 0, 0)}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:blue\\}\\.${hid}::-webkit-input-placeholder,\\.${hid}::-moz-placeholder,\\.${hid}::-ms-input-placeholder\\{color:rgba\\(0, 0, 0, 0\\)\\}$`));
   });
 
   it("should support $unique", () => {
@@ -105,7 +105,7 @@ describe("initial test", () => {
         }
       }
     });
-    assert.equal(getStyles(), '.f13byakl{color:blue}.f13byakl::-webkit-input-placeholder{color:rgba(0, 0, 0, 0)}.f13byakl::-moz-placeholder{color:rgba(0, 0, 0, 0)}.f13byakl::-ms-input-placeholder{color:rgba(0, 0, 0, 0)}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{color:blue\\}\\.${hid}::-webkit-input-placeholder\\{color:rgba\\(0, 0, 0, 0\\)\\}\\.${hid}::-moz-placeholder\\{color:rgba\\(0, 0, 0, 0\\)\\}\\.${hid}::-ms-input-placeholder\\{color:rgba\\(0, 0, 0, 0\\)\\}$`));
   });
 
   it("should support $debugName", () => {
@@ -119,7 +119,7 @@ describe("initial test", () => {
         }
       }
     });
-    assert.equal(getStyles(), '.sample_fy3xmhm{color:blue}.sample_fy3xmhm:hover{color:rgba(0, 0, 0, 0)}');
+    assert.match(getStyles(), new RegExp(`^\\.sample_${hid}\\{color:blue\\}\\.sample_${hid}:hover\\{color:rgba\\(0, 0, 0, 0\\)\\}$`));
   });
 
   it("should generate meaningful classnames using stylesheet", () => {
@@ -132,11 +132,9 @@ describe("initial test", () => {
         color: 'green'
       }
     });
-    assert.deepEqual(classes, {
-      warning: 'warning_f1jvcvsh',
-      success: 'success_fmubem1'
-    });
-    assert.equal(getStyles(), '.warning_f1jvcvsh{color:red}.success_fmubem1{color:green}');
+    assert.match(classes.warning, new RegExp(`^warning_${hid}$`));
+    assert.match(classes.success, new RegExp(`^success_${hid}$`));
+    assert.match(getStyles(), new RegExp(`^\\.warning_${hid}\\{color:red\\}\\.success_${hid}\\{color:green\\}$`));
   })
 
   it("style should ignore 'false' 'null' and 'undefined'", () => {
@@ -148,7 +146,7 @@ describe("initial test", () => {
       undefined,
       { backgroundColor: 'red' }
     );
-    assert.equal(getStyles(), '.fb25ljk{background-color:red;color:blue}');
+    assert.match(getStyles(), new RegExp(`^\\.${hid}\\{background-color:red;color:blue\\}$`));
   });
 
   it("should generate unique instances when typestyle() is called", () => {
@@ -158,8 +156,8 @@ describe("initial test", () => {
     ts1.style({ fontSize: 14 });
     ts2.style({ fontSize: 16 });
 
-    assert.equal(ts1.getStyles(), '.fc4zu15{font-size:14px}');
-    assert.equal(ts2.getStyles(), '.f1rwc7t7{font-size:16px}');
+    assert.match(ts1.getStyles(), new RegExp(`^\\.${hid}\\{font-size:14px\\}$`));
+    assert.match(ts2.getStyles(), new RegExp(`^\\.${hid}\\{font-size:16px\\}$`));
   });
 
   it("should work if no target is set on an instance", () => {

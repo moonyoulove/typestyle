@@ -16,7 +16,7 @@ const createFreeStyle = () => FreeStyle.create();
  */
 export class TypeStyle {
   private _autoGenerateTag: boolean;
-  private _freeStyle: FreeStyle.FreeStyle;
+  private _freeStyle: FreeStyle.Sheet;
   private _pending: number;
   private _pendingRawChange: boolean;
   private _raw: string;
@@ -111,7 +111,10 @@ export class TypeStyle {
    */
   public cssRule = (selector: string, ...objects: types.NestedCSSProperties[]): void => {
     const styles = convertToStyles(extend(...objects));
-    this._freeStyle.registerRule(selector, styles);
+    this._freeStyle.registerStyle({
+      $global: true,
+      [selector]: styles
+    });
     this._styleUpdated();
     return;
   }
@@ -135,7 +138,10 @@ export class TypeStyle {
   public fontFace = (...fontFace: types.FontFace[]): void => {
     const freeStyle = this._freeStyle;
     for (const face of fontFace as FreeStyle.Styles[]) {
-      freeStyle.registerRule('@font-face', face);
+      freeStyle.registerStyle({
+        $global: true,
+        '@font-face': face
+      });
     }
     this._styleUpdated();
     return;
@@ -154,7 +160,11 @@ export class TypeStyle {
   public keyframes = (frames: types.KeyFrames): string => {
     const keyframes = convertToKeyframes(frames);
     // TODO: replace $debugName with display name
-    const animationName = this._freeStyle.registerKeyframes(keyframes);
+    const animationName = this._freeStyle.registerStyle({
+      $global: true,
+      $displayName: keyframes.$displayName,
+      "@keyframes &": keyframes
+    });
     this._styleUpdated();
     return animationName;
   }

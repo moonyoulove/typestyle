@@ -1,5 +1,6 @@
-import { style, getStyles, reinit, cssRaw } from '../index';
+import { style, getStyles, reinit, cssRaw, hid } from '../index';
 import * as assert from 'assert';
+import escapeStringRegexp from 'escape-string-regexp';
 
 describe("raw css support", () => {
   it('should insert raw css by itself', () => {
@@ -23,6 +24,6 @@ describe("raw css support", () => {
       color: 'red'
     })
     cssRaw(rawCSS);
-    assert.equal(getStyles(), rawCSS + '.f1jvcvsh{color:red}');
+    assert.match(getStyles(),  new RegExp(`${escapeStringRegexp(rawCSS)}\\.${hid}\\{color:red\\}`));
   })
 });

@@ -1,4 +1,4 @@
-import { reinit, keyframes } from '../index';
+import { reinit, keyframes, hid } from '../index';
 import * as assert from 'assert';
 
 describe("keyframes", () => {
@@ -9,8 +9,7 @@ describe("keyframes", () => {
         from: { opacity: 0 },
         to: { opacity: 1 }
       });
-
-      assert.equal(animationName, 'fade-in_f1gwuh0p');
+      assert.match(animationName, new RegExp(`^fade-in_${hid}$`));
   });
 
   it('supports generated animation name', () => {
@@ -19,7 +18,6 @@ describe("keyframes", () => {
       from: { opacity: 0 },
       to: { opacity: 1 }
     });
-
-    assert.equal(animationName, 'f1gwuh0p');
+    assert.match(animationName, new RegExp(`^${hid}$`));
   });
 });
