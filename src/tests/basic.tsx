@@ -1,5 +1,6 @@
-import { style, stylesheet, getStyles, reinit, classes, cssRule, createTypeStyle, hid} from '../index';
+import { style, stylesheet, getStyles, reinit, classes, cssRule, createTypeStyle} from '../index';
 import * as assert from 'assert';
+import { hid } from './constants';
 
 describe("initial test", () => {
   it("should pass", () => {

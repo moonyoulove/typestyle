@@ -4,6 +4,26 @@ import * as types from '../types';
 import { convertToStyles, convertToKeyframes } from './formatting';
 import { extend, raf } from './utilities';
 
+class Raw implements FreeStyle.Container<Raw> {
+  rule: string;
+
+  constructor(rule: string) {
+    this.rule = rule
+  }
+
+  cid() {
+    return this.rule;
+  }
+
+  getStyles(): string {
+    return this.rule;
+  }
+
+  clone(): Raw {
+    return new Raw(this.rule);
+  }
+}
+
 export type StylesTarget = { textContent: string | null };
 
 /**
@@ -101,8 +121,8 @@ export class TypeStyle {
     if (!mustBeValidCSS) {
       return;
     }
-    this._raw += mustBeValidCSS || '';
-    this._pendingRawChange = true;
+    this._freeStyle.add(new Raw(mustBeValidCSS) as FreeStyle.Rule);
+
     this._styleUpdated();
   }
 

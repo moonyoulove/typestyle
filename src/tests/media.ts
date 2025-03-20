@@ -1,5 +1,6 @@
-import { cssRule, style, getStyles, reinit, media, hid } from '../index';
+import { cssRule, style, getStyles, reinit, media } from '../index';
 import * as assert from 'assert';
+import { hid } from './constants';
 
 describe("media query", () => {
   it("standard freestyle", () => {

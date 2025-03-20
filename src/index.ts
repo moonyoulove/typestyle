@@ -86,5 +86,3 @@ export function createTypeStyle(target?: { textContent: string | null }): TypeSt
   }
   return instance;
 }
-
-export const hid = '[a-z0-9]{1,8}';

@@ -1,5 +1,6 @@
-import { style, getStyles, reinit, hid } from '../index';
+import { style, getStyles, reinit } from '../index';
 import * as assert from 'assert';
+import { hid } from './constants';
 
 describe('@supports', () => {
   it('standard freestyle', () => {

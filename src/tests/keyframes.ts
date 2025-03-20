@@ -1,5 +1,6 @@
-import { reinit, keyframes, hid } from '../index';
+import { reinit, keyframes } from '../index';
 import * as assert from 'assert';
+import { hid } from './constants';
 
 describe("keyframes", () => {
   it('supports $debugName in animation name', () => {

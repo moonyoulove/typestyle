@@ -1,6 +1,7 @@
-import { style, getStyles, reinit, cssRaw, hid } from '../index';
+import { style, getStyles, reinit, cssRaw } from '../index';
 import * as assert from 'assert';
 import escapeStringRegexp from 'escape-string-regexp';
+import { hid } from './constants';
 
 describe("raw css support", () => {
   it('should insert raw css by itself', () => {
