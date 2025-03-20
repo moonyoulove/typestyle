@@ -13,7 +13,8 @@
     "test": "npm run build && npm run unittest",
     "preversion": "npm run test",
     "postversion": "git push --follow-tags && npm publish",
-    "start": "npm run build -- -w & npm run unittest -- --watch"
+    "start": "npm run build -- -w & npm run unittest -- --watch",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
